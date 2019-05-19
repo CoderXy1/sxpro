@@ -1,0 +1,143 @@
+1.安装eclipse
+注意：workspace编码设置为UTF-8,JSP设置UTF-8
+
+2.安装mysql
+解压mysql，设置配置文件my.ini
+[mysqld] 
+#设置字符集为utf8 
+character_set_server = utf8 
+basedir = D:/mysql-5.5.10-win32 
+datadir = D:/mysql-5.5.10-win32/data 
+ 
+[client] 
+#设置客户端字符集 
+default-character-set = utf8 
+ 
+[WinMySQLadmin] 
+Server = D:/mysql-5.5.10-win32/bin/mysqld.exe 
+
+都是在bin
+1.注册服务  mysqld -install
+2.启动   net start mysql 
+--------------------------------------图形化工具自行选择
+3.maven管理项目工具（下载jar包，进行打包）
+3.1解压maven，配置环境变量，使用mvn -v 检验maven是否安装成功
+注：如果提示未找到JAVA_HOME 就在系统变量添加JAVA_HOME
+
+使用maven之前
+1.更改maven下载的jar的存放路径
+在setting.xml 设置 localrepo的路径
+2.设置maven下载仓库的服务器地址（国内镜像）
+<mirror>  
+      <id>alimaven</id>  
+      <name>aliyun maven</name>  
+      <url>http://maven.aliyun.com/nexus/content/groups/public/</url>  
+      <mirrorOf>central</mirrorOf>          
+    </mirror>
+-----------------------------------------------------------------------
+4.maven创建javawebproject （J2EE）项目
+  maven 创建servlet项目
+4.1(或)
+在eclipse中添加maven插件
+http://www.eclipse.org/m2e/m2e-downloads.html
+4.2
+更改之前在eclipse中设置maven的路径  
+prefence ----》maven----》user setting  改成自己的maven安装目录下面setting文件
+通过maven搭建一个基础的webproject
+file ---other  -maven project
+maven管理项目根本在于pom.xml
+pom.xml 里面就是对当前项目的环境和依赖的jar包的设置文件
+逻辑代码  src/main/java    后台代码
+
+页面展示层的代码  src/main/webapp
+
+注意：如果在没有WEB-INF和MATA-INF 文件 就需要将自己通过普通web项目进行文件的拷贝
+
+4.3为了验证项目能够正常运行在tomcat中
+安装tomcat 解压
+4.3.1在eclipse中配置tomcat容器
+第一次一定要设置一下tomcat的安装路径和选择发布路径
+4.3.2 测试项目是否正常
+(本机替换了jdk为1.6,maven版本换成了3.2.5)
+-----------------------------------------------
+创建项目完毕之后
+1.把项目传到git上面
+步骤 
+切换项目目录下==》初始化git仓库 ====》添加git忽略文件 ====》正常的git推送到远程仓库上面
+----------------------------------------------------------------------------------------
+1..写代码
+J2EE  大项目  小项目  
+大项目 --- 小项目 遵循 MVC架构模式
+										（持久化）
+      前端         ===========    后台   =========  数据库
+     这是一个闭环。
+前端2个动作：1.发送数据  http无状态协议  （传送数据后台2种 适应不同的场景）
+				一种就是form表单的方式  form标签 form标签里面的元素内容  （同步）
+						http://localhost:8080/crm/请求的动作
+						http://localhost:8080/crm/login?uname=xxx
+						请求的动作如果需要带参数
+						请求动作?名词=xxx & 名词1=xxx
+						我给你打电话  你必须要回复我  然后我才可以打下个电话（同步）
+				二种方式利用ajax的方式  一个标准的写法  （jquery ajax）  （异步）
+						 1.需要引入jquery
+						 2.使用jquery ajax
+						 $(function(){
+									 $("#btn1").click(function(){
+										 var uname = $("#uname").val()
+										 console.log(uname)
+										 // jquery ajax请求
+										 $.ajax({
+											 //请求的路径
+											 url:'login',
+											 //请求的方式
+											 type : "post",
+											 //传递的数据
+											 data：{'uname':uname},
+											 //返回的数据格式
+											 dataType:'text',
+											 //成功返回的接受的函数
+											 success:function(res){
+												 console.log(res)
+											 }
+											 
+										 })
+									 })	 
+							})
+							
+							3.何为异步
+							我给你打电话  你不一定要马上回复我  我可以继续打下个电话（异步）
+
+
+						
+			 2.展现数据
+			    一旦后台拿到数据，你需要把数据放在什么样的位置上面放在html上面
+				需要利用js,jquery操作html元素
+			(ES5标准)
+			
+--------------------------------------------------------------------
+后台： 1.接收前台发送的数据 （通过http协议）
+		 如何接收  servlet  ----> struts2 ----> springMVC
+		 servlet对象
+		 使用提供了2个标准  1.通过配置xml文件
+							2.通过注解的方式
+							3.一旦进入对应servlet对象中，
+							那么数据具体做什么样的逻辑是否进行持久化一切都取决你的需求
+       2.把逻辑处理好的数据传输到前台去（逻辑处理的好的数据）
+						1.同步 利用到servlet里面提供内置对象（seesion）存储数据
+						       如果在对应的页面当中要展现数据，需用到EL表达式  JSTL C标签     
+						2.异步 只需要用response对象 有一个输出流
+						       通过输出流我们可以回写数据到页面中
+------------------------------------------------数据库操作 JDBC	
+1.整个环做个完整操作
+1.1 前端页面发起请求
+1.2 对应的servlet接收请求
+1.3 调用对应的服务 （持久化的操作)  （一个服务可以对应对个数据库层次上面的操作）
+1.4 根据结果做对应的数据返回操作  
+
+						   
+							   
+						
+						       
+
+
+
